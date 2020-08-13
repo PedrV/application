@@ -1,4 +1,9 @@
+/* 
+Create a socket to act as client
+*/
+
 package src.com.lux;
+
 // A Java program for a Client 
 import java.net.*; 
 import java.io.*; 
@@ -21,13 +26,11 @@ public class Client {
   
             // sends output to the socket 
             out    = new DataOutputStream(socket.getOutputStream()); 
-        }
 
-        catch(UnknownHostException u) { 
-            System.out.println(u); 
-        } 
-
-        catch(IOException i) { 
+        } catch(UnknownHostException u) { 
+            System.out.println(u);
+             
+        }  catch(IOException i) { 
             System.out.println(i); 
         } 
   
@@ -51,9 +54,7 @@ public class Client {
             input.close(); 
             out.close(); 
             socket.close(); 
-        } 
-
-        catch(IOException i) { 
+        } catch(IOException i) { 
             System.out.println(i); 
         } 
     } 

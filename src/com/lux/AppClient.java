@@ -1,3 +1,7 @@
+/* 
+Test for Client Side Socket
+*/
+
 package src.com.lux;
 
 public class AppClient {

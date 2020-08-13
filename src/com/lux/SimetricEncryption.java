@@ -1,59 +1,110 @@
+/* 
+Third draft for Simetric Type Encryption
+	- Encrypton seems to work fine, but can be improved and Block cipher mode of operation, Counter Mode, Padding are to be
+	studied
+	- Decryption doesnt work
+*/
+
+
 package src.com.lux;
 
-import java.security.KeyPair;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
-import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey; 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.KeyGenerator;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
 
 public class SimetricEncryption {
 
     private static final String ALGORITHM = "AES";
+    private static final String AES_CIPHER_ALGORITHM = "AES/GCM/NoPadding";
 
-    private SimetricEncryption(){
-
+    private SimetricEncryption() {
     }
 
-    public static byte[] do_AESEncryption(String plainText, SecretKey secretKey) throws Exception{ 
+    public static byte[] createInitializationVector() {
+        // Used with encryption
+        byte[] initializationVector = new byte[16];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(initializationVector);
+        return initializationVector;
+    }
 
-        byte[] initializationVector = new byte[16]; 
-		SecureRandom secureRandom = new SecureRandom(); 
-		secureRandom.nextBytes(initializationVector); 
+    public static byte[] doAESEncryption(String plainText, SecretKey secretKey, byte[] initializationVector) {
 
-        Cipher cipher = Cipher.getInstance(AES_CIPHER_ALGORITHM); 
-		IvParameterSpec ivParameterSpec = new IvParameterSpec(initializationVector); 
+        Cipher cipher = null;
+		try {
+			cipher = Cipher.getInstance(AES_CIPHER_ALGORITHM);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
+		
+        //IvParameterSpec ivParameterSpec = new IvParameterSpec(initializationVector);
 
-		cipher.init(Cipher.ENCRYPT_MODE, secretKey,ivParameterSpec); 
+        try {
+			cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		}
 
-		return cipher.doFinal(plainText.getBytes()); 
-	} 
+        try {
+			return cipher.doFinal(plainText.getBytes());
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
+			e.printStackTrace();
+			return initializationVector;
+		}
+    }
 
-    public static String do_AESDecryption(byte[] cipherText, SecretKey secretKey, byte[] initializationVector) throws Exception{ 
-		Cipher cipher 
-			= Cipher.getInstance( 
-				AES_CIPHER_ALGORITHM); 
+    public static String doAESDecryption(byte[] cipherText, SecretKey secretKey, byte[] initializationVector) {
 
-		IvParameterSpec ivParameterSpec 
-			= new IvParameterSpec( 
-				initializationVector); 
+		Cipher cipher = null;
+		
+		try {
+			cipher = Cipher.getInstance(AES_CIPHER_ALGORITHM);
+		} catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
+			e.printStackTrace();
+		}
 
-		cipher.init( 
-			Cipher.DECRYPT_MODE, 
-			secretKey, 
-			ivParameterSpec); 
+        // IvParameterSpec ivParameterSpec = new IvParameterSpec( initializationVector);
 
-		byte[] result 
-			= cipher.doFinal(cipherText); 
+        try {
+			cipher.init(Cipher.DECRYPT_MODE, secretKey);
+		} catch (InvalidKeyException e) {
+			e.printStackTrace();
+		} 
 
-		return new String(result); 
-	} 
+        byte[] result = new byte[16];
+		try {
+			result = cipher.doFinal(cipherText);
+		} catch (IllegalBlockSizeException | BadPaddingException e) {
+			e.printStackTrace();
+		}
 
-	public static SecretKey createAESKey() throws Exception { 
-		SecureRandom securerandom = new SecureRandom(); 
-		KeyGenerator keygenerator = KeyGenerator.getInstance(AES); 
+        return new String(result);
+    }
 
-		keygenerator.init(256, securerandom); 
-		SecretKey key = keygenerator.generateKey(); 
-		return key; 
-	} 
+    public static SecretKey createAESKey() {
+        SecureRandom securerandom = new SecureRandom();
+
+		KeyGenerator keygenerator;
+		SecretKey key = null; 		// TODO: Possible vulnerability in the event of Algorithm Error, the SecretKey gets forced to null
+        try {
+
+			keygenerator = KeyGenerator.getInstance(ALGORITHM);
+			keygenerator.init(256, securerandom);
+			key = keygenerator.generateKey();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+        return key;
+    }
 }

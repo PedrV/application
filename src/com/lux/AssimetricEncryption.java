@@ -1,3 +1,8 @@
+/* 
+Very first draft of Assimetric Type Encryption
+    - No tests were performed
+*/
+
 package src.com.lux;
 
 import java.security.KeyFactory;
@@ -15,13 +20,13 @@ import javax.crypto.Cipher;
 
 public class AssimetricEncryption {
 
-    private static final String ALGORITHM = "RSA";
+    private static final String ALGORITHM = "RSA/None/OAEPWITHSHA-256ANDMGF1PADDING";
 
     private AssimetricEncryption(){
 
     }
 
-    public static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
+    public byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
 
         PublicKey key = KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(publicKey));
 
@@ -33,7 +38,7 @@ public class AssimetricEncryption {
         return encryptedBytes;
     }
 
-    public static byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
+    public byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
 
         PrivateKey key = KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(privateKey));
 
@@ -45,7 +50,7 @@ public class AssimetricEncryption {
         return decryptedBytes;
     }
 
-    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
+    public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
 
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
 
