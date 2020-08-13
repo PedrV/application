@@ -15,18 +15,21 @@ import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 import javax.crypto.Cipher;
 
 public class AssimetricEncryption {
 
-    private static final String ALGORITHM = "RSA/None/OAEPWITHSHA-256ANDMGF1PADDING";
+    //private static final String ALGORITHM = "RSA/None/OAEPWITHSHA-256ANDMGF1PADDING";
+    private static final String ALGORITHM = "RSA";
+
 
     private AssimetricEncryption(){
 
     }
 
-    public byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
+    public static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
 
         PublicKey key = KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(publicKey));
 
@@ -35,22 +38,20 @@ public class AssimetricEncryption {
 
         byte[] encryptedBytes = cipher.doFinal(inputData);
 
-        return encryptedBytes;
+        return Base64.getEncoder().encode(encryptedBytes);
     }
 
-    public byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
+    public static byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
 
         PrivateKey key = KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(privateKey));
 
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.DECRYPT_MODE, key);
 
-        byte[] decryptedBytes = cipher.doFinal(inputData);
-
-        return decryptedBytes;
+        return cipher.doFinal(Base64.getDecoder().decode(inputData));
     }
 
-    public KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
+    public static KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
 
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
 
@@ -58,7 +59,6 @@ public class AssimetricEncryption {
 
         keyGen.initialize(512, random);
 
-        KeyPair generateKeyPair = keyGen.generateKeyPair();
-        return generateKeyPair;
+        return keyGen.generateKeyPair();
     }
 }

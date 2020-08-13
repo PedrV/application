@@ -11,6 +11,8 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Base64;
 
 import javax.crypto.SecretKey;
 import javax.crypto.BadPaddingException;
@@ -55,7 +57,7 @@ public class SimetricEncryption {
         }
 
         try {
-            return cipher.doFinal(plainText.getBytes());
+            return Base64.getEncoder().encode(cipher.doFinal(plainText.getBytes()));
         } catch (IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace();
             return initializationVector;
@@ -65,6 +67,7 @@ public class SimetricEncryption {
     public static String doAESDecryption(byte[] cipherText, SecretKey secretKey, byte[] initializationVector) {
 
         Cipher cipher = null;
+        cipherText = Base64.getDecoder().decode(cipherText);
 
         try {
             cipher = Cipher.getInstance(AES_CIPHER_ALGORITHM);
