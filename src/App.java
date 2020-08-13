@@ -2,7 +2,7 @@
 Testing Encryption/Decryption messages 
 */
 
-package src.com.lux;
+package src;
 
 import javax.crypto.SecretKey; 
 import java.util.Arrays;

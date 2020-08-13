@@ -5,7 +5,7 @@ Third draft for Simetric Type Encryption
 */
 
 
-package src.com.lux;
+package src;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;

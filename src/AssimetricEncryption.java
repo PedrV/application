@@ -3,7 +3,7 @@ Very first draft of Assimetric Type Encryption
     - No tests were performed
 */
 
-package src.com.lux;
+package src;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;

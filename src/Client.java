@@ -2,7 +2,7 @@
 Create a socket to act as client
 */
 
-package src.com.lux;
+package src;
 
 // A Java program for a Client 
 import java.net.*; 

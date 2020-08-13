@@ -2,7 +2,7 @@
 Create a socket to act as server, this will look for incoming connections from possible clients 
 */
 
-package src.com.lux;
+package src;
 
 // A Java program for a Server 
 import java.net.*; 
