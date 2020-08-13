@@ -10,7 +10,7 @@ public class Client {
     private DataOutputStream out     = null; 
   
     // constructor to put ip address and port 
-    public Client(String address, int port) { 
+    public void Client(String address, int port) { 
         // establish a connection 
         try { 
             socket = new Socket(address, port); 
@@ -56,9 +56,5 @@ public class Client {
         catch(IOException i) { 
             System.out.println(i); 
         } 
-    } 
-  
-    public static void main(String[] args) { 
-        Client client = new Client("127.0.0.1", 5000); 
     } 
 } 

@@ -6,7 +6,7 @@ import java.io.*;
 public class Server { 
     //initialize socket and input stream 
     private Socket          socket   = null; 
-    private ServerSocket    server   = null; 
+    private ServerSocket    svsoket   = null; 
     private DataInputStream in       = null; 
   
     private String readConnection () {
@@ -23,15 +23,15 @@ public class Server {
     }
 
     // constructor with port 
-    public Server(int port) { 
+    public void Server(int port) { 
         // starts server and waits for a connection 
         try { 
-            server = new ServerSocket(port); 
+            svsoket = new ServerSocket(port); 
             System.out.println("Server started"); 
   
             System.out.println("Waiting for a client ..."); 
   
-            socket = server.accept(); 
+            socket = svsoket.accept(); 
             System.out.println("Client accepted"); 
   
             // takes input from the client socket 
@@ -54,9 +54,5 @@ public class Server {
         catch(IOException i) { 
             System.out.println(i); 
         } 
-    } 
-  
-    public static void main(String[] args) { 
-        Server server = new Server(5000); 
     } 
 } 
