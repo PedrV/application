@@ -5,7 +5,7 @@ Third draft for Simetric Type Encryption
 */
 
 
-//package src.com.lux;
+package src.com.lux;
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
@@ -20,12 +20,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.GCMParameterSpec;
 
-public class Other {
+public class SimetricEncryption {
 
     private static final String ALGORITHM = "AES";
     private static final String AES_CIPHER_ALGORITHM = "AES/GCM/NoPadding";
 
-    private Other() {
+    private SimetricEncryption() {
     }
 
     public static byte[] createInitializationVector() {
