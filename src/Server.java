@@ -12,13 +12,14 @@ public class Server {
     //initialize socket and input stream 
     private Socket          socket   = null; 
     private ServerSocket    svsoket   = null; 
-    private DataInputStream in       = null; 
+    private DataInputStream in       = null;
+    String name = "Client";
   
     private String readConnection () {
         String line = "";
         try { 
             line = in.readUTF(); 
-            System.out.println(line); 
+            System.out.println("[" + name + "]: " + line);
 
         } catch(IOException i) { 
             System.out.println(i); 
