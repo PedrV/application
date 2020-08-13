@@ -13,9 +13,13 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 
-public class Encryption {
+public class AssimetricEncryption {
 
     private static final String ALGORITHM = "RSA";
+
+    private AssimetricEncryption(){
+
+    }
 
     public static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
 

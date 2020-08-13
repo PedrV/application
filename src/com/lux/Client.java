@@ -10,7 +10,7 @@ public class Client {
     private DataOutputStream out     = null; 
   
     // constructor to put ip address and port 
-    public void Client(String address, int port) { 
+    public Client(String address, int port) { 
         // establish a connection 
         try { 
             socket = new Socket(address, port); 

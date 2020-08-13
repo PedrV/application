@@ -1,4 +1,5 @@
 package src.com.lux;
+
 // A Java program for a Server 
 import java.net.*; 
 import java.io.*; 
@@ -23,7 +24,7 @@ public class Server {
     }
 
     // constructor with port 
-    public void Server(int port) { 
+    public Server(int port) { 
         // starts server and waits for a connection 
         try { 
             svsoket = new ServerSocket(port); 
