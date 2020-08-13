@@ -23,9 +23,9 @@ hs_err_pid*
 
 # IDE
 .vscode
-.ideia
+.ideia/
 application.iml
-out/*
+out/
 
 # Checkstyle
 .xml
