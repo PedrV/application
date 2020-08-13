@@ -1,4 +1,4 @@
-package com.lux.app;
+package src.com.lux;
 
 public class app{
     private Client = null;

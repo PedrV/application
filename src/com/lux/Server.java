@@ -1,4 +1,4 @@
-package com.lux.server;
+package src.com.lux;
 // A Java program for a Server 
 import java.net.*; 
 import java.io.*; 

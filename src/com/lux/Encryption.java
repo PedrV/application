@@ -1,4 +1,4 @@
-package com.lux.encryption;
+package src.com.lux;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;

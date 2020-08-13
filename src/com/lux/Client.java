@@ -1,4 +1,4 @@
-package com.lux.client;
+package src.com.lux;
 // A Java program for a Client 
 import java.net.*; 
 import java.io.*; 
