@@ -36,9 +36,7 @@ public class AssimetricEncryption {
         Cipher cipher = Cipher.getInstance(ALGORITHM);
         cipher.init(Cipher.ENCRYPT_MODE, key);
 
-        byte[] encryptedBytes = cipher.doFinal(inputData);
-
-        return Base64.getEncoder().encode(encryptedBytes);
+        return Base64.getEncoder().encode(cipher.doFinal(inputData));
     }
 
     public static byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {

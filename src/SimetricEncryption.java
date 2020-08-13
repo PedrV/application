@@ -100,7 +100,6 @@ public class SimetricEncryption {
         KeyGenerator keygenerator;
         SecretKey key = null; 		// TODO: Possible vulnerability in the event of Algorithm Error, the SecretKey gets forced to null
         try {
-
             keygenerator = KeyGenerator.getInstance(ALGORITHM);
             keygenerator.init(256, securerandom);
             key = keygenerator.generateKey();

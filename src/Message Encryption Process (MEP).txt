@@ -1,0 +1,36 @@
+        String str = "";
+        System.out.println("String: " + str);
+
+        // Encrypt process
+        SecretKey key = SimetricEncryption.createAESKey();
+        byte[] iv = SimetricEncryption.createInitializationVector();
+        byte[] simetric = SimetricEncryption.doAESEncryption(str,key,iv);
+
+        System.out.print("Simetric Encryption: ");
+        for(byte a : simetric) System.out.print((char) a);
+        System.out.println();
+
+        KeyPair pkeys = AssimetricEncryption.generateKeyPair();
+        byte[] keyencryption = AssimetricEncryption.encrypt(pkeys.getPublic().getEncoded(),key.getEncoded());
+
+        System.out.print("Key Encryption: ");
+        for(byte a : keyencryption) System.out.print((char) a);
+        System.out.println();
+
+        // Desencrypt process
+        byte[] newkey = AssimetricEncryption.decrypt(pkeys.getPrivate().getEncoded(),keyencryption);
+        String newstring = SimetricEncryption.doAESDecryption(simetric,new SecretKeySpec(newkey, 0, newkey.length, "AES"),iv);
+
+        System.out.println("Desencrypted message: " + newstring);
+        System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
+
+
+        /*
+        Process:
+        1. generate a symmetric key
+        2. Encrypt the data with the symmetric key
+        3. Encrypt the symmetric key with rsa
+        4. send the encrypted key and the data
+        5. Decrypt the encrypted symmetric key with rsa
+        6. decrypt the data with the symmetric key
+        */
