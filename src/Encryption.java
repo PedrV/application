@@ -13,7 +13,7 @@ import java.security.spec.X509EncodedKeySpec;
 
 import javax.crypto.Cipher;
 
-class Encryption {
+public class Encryption {
 
     private static final String ALGORITHM = "RSA";
 
