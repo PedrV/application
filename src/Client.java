@@ -1,5 +1,6 @@
 /* 
 Create a socket to act as client
+Need to correct the way Server and Client act afer client disconnect without previous warning
 */
 
 package src;
