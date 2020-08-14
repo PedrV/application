@@ -13,16 +13,18 @@ import java.io.*;
 public class Server { 
     //initialize socket and input stream 
     private Socket          socket   = null; 
-    private ServerSocket    svsoket   = null; 
-    private DataInputStream in       = null;
+    private ServerSocket    svsocket = null;
+    private DataInputStream in           = null;
     String name = "Client";
   
     private boolean readConnection () {
-        String line = "";
+        String inputline = "";
+
         try { 
-            line = in.readUTF();
-            if(line.equalsIgnoreCase("over")) return false;
-            System.out.println("[" + name + ",d]: " + line);
+            inputline = in.readUTF();
+
+            if(inputline.equalsIgnoreCase("over")) return false;
+            System.out.println("[" + name + "]: " + inputline);
 
         } catch(IOException i) { 
             System.out.println(i); 
@@ -34,21 +36,18 @@ public class Server {
     public Server(int port) { 
         // starts server and waits for a connection 
         try { 
-            svsoket = new ServerSocket(port); 
+            svsocket = new ServerSocket(port);
             System.out.println("Server started"); 
   
             System.out.println("Waiting for a client ..."); 
   
-            socket = svsoket.accept(); 
+            socket = svsocket.accept();
             System.out.println("Client accepted"); 
   
             // takes input from the client socket 
-            in = new DataInputStream( 
-                new BufferedInputStream(socket.getInputStream())); 
-  
-            String line = ""; 
-  
-            // reads message from client until "Over" is sent 
+            in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+
+            // reads message from client until "over" is sent
             while (readConnection()){}
 
             System.out.println("Closing connection"); 

@@ -142,9 +142,5 @@ public class App{
         System.out.println("Desencrypted message: " + newstring);
         System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
 */
-
-
-
     }
-
 }
