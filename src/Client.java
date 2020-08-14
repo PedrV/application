@@ -38,12 +38,11 @@ public class Client {
         String line = ""; 
   
         // keep reading until "Over" is input 
-        while (!line.equals("Over"))  { 
+        while (!line.equalsIgnoreCase("over"))  {
             try { 
                 line = input.readLine(); 
                 out.writeUTF(line); 
             }
-
             catch(IOException i) { 
                 System.out.println(i); 
             } 

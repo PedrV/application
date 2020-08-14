@@ -5,7 +5,9 @@ Create a socket to act as server, this will look for incoming connections from p
 package src;
 
 // A Java program for a Server 
-import java.net.*; 
+import javafx.application.Application;
+
+import java.net.*;
 import java.io.*; 
   
 public class Server { 
@@ -15,17 +17,17 @@ public class Server {
     private DataInputStream in       = null;
     String name = "Client";
   
-    private String readConnection () {
+    private boolean readConnection () {
         String line = "";
         try { 
-            line = in.readUTF(); 
-            System.out.println("[" + name + "]: " + line);
+            line = in.readUTF();
+            if(line.equalsIgnoreCase("over")) return false;
+            System.out.println("[" + name + ",d]: " + line);
 
         } catch(IOException i) { 
             System.out.println(i); 
-        } 
-
-        return line;
+        }
+        return true;
     }
 
     // constructor with port 
@@ -47,16 +49,15 @@ public class Server {
             String line = ""; 
   
             // reads message from client until "Over" is sent 
-            while (!line.equals("Over"))
-                readConnection();
+            while (readConnection()){}
 
             System.out.println("Closing connection"); 
   
             // close connection 
             socket.close(); 
-            in.close(); 
-        } 
-
+            in.close();
+            return;
+        }
         catch(IOException i) { 
             System.out.println(i); 
         } 

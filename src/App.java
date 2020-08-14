@@ -15,6 +15,18 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.Scanner;
 
+class User{
+    Client client;
+    Server server;
+
+    User(String ipadress, int port){
+        server = new Server(port);
+        client = new Client(ipadress,port);
+    }
+}
+
+
+
 public class App{
 
     public static void main(String[] args) throws Exception {
@@ -102,7 +114,7 @@ public class App{
         //byte[] result = AssimetricEncryption.
 */
         // TESTE NUMBER 3
-
+/*
         Scanner stdin = new Scanner(System.in);
         String str = stdin.nextLine();
         System.out.println("String: " + str);
@@ -129,6 +141,8 @@ public class App{
 
         System.out.println("Desencrypted message: " + newstring);
         System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
+*/
+
 
 
     }
