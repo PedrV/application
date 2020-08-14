@@ -114,10 +114,14 @@ public class App{
         //byte[] result = AssimetricEncryption.
 */
         // TESTE NUMBER 3
-/*
+
         Scanner stdin = new Scanner(System.in);
         String str = stdin.nextLine();
         System.out.println("String: " + str);
+
+        if(str.contains("andre+")){
+            System.out.println("Too Powerfull to be encrypted");
+        }
 
         // Encrypt process
         SecretKey key = SimetricEncryption.createAESKey();
@@ -141,6 +145,5 @@ public class App{
 
         System.out.println("Desencrypted message: " + newstring);
         System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
-*/
     }
 }
