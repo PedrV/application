@@ -5,18 +5,18 @@ Need to correct the way Server and Client act afer client disconnect without pre
 
 package src;
 
-// A Java program for a Server 
-import javafx.application.Application;
-
-import java.net.*;
-import java.io.*; 
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
   
 public class Server { 
     //initialize socket and input stream 
     private Socket          socket   = null; 
     private ServerSocket    svsocket = null;
-    private DataInputStream in           = null;
-    String name = "Client";
+    private DataInputStream in       = null;
+    private String          name     = "Client";
   
     private boolean readConnection () {
         String inputline = "";

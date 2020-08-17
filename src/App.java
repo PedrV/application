@@ -132,18 +132,20 @@ public class App{
         for(byte a : simetric) System.out.print((char) a);
         System.out.println();
 
-        KeyPair pkeys = AssimetricEncryption.generateKeyPair();
-        byte[] keyencryption = AssimetricEncryption.encrypt(pkeys.getPublic().getEncoded(),key.getEncoded());
+        AssimetricEncryption.generateKeyPair();
+        byte[] keyencryption = AssimetricEncryption.encrypt(key.getEncoded());
 
         System.out.print("Key Encryption: ");
         for(byte a : keyencryption) System.out.print((char) a);
         System.out.println();
 
         // Desencrypt process
-        byte[] newkey = AssimetricEncryption.decrypt(pkeys.getPrivate().getEncoded(),keyencryption);
+        byte[] newkey = AssimetricEncryption.decrypt(keyencryption);
         String newstring = SimetricEncryption.doAESDecryption(simetric,new SecretKeySpec(newkey, 0, newkey.length, "AES"),iv);
 
         System.out.println("Desencrypted message: " + newstring);
         System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
     }
+
+
 }

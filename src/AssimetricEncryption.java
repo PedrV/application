@@ -1,50 +1,51 @@
 /* 
 Very first draft of Assimetric Type Encryption
-    - No tests were performed
+    - Possible change for BouncyCastle provider, operates differntly regarding RSA/ECB/OAEPWITHSHA-256ANDMGF1PADDING, 
+    Java default crypto provider uses SHA1 as the MGF1 function has, BouncyCastle appears to use SHA256 for both MG1 and OAEP and may cause compatibility issues
 */
+
 
 package src;
 
-import java.security.KeyFactory;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.SecureRandom;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Base64;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 public class AssimetricEncryption {
 
-    //private static final String ALGORITHM = "RSA/None/OAEPWITHSHA-256ANDMGF1PADDING";
+    private static final String RSA_CIPHER_ALGORITHM = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding";
     private static final String ALGORITHM = "RSA";
+    private static RSAPublicKey pubkey;
+    private static RSAPrivateKey privkey;
 
-
-    private AssimetricEncryption(){
-
+    private AssimetricEncryption() {
     }
 
-    public static byte[] encrypt(byte[] publicKey, byte[] inputData) throws Exception {
+    public static byte[] encrypt(byte[] inputData) throws NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        PublicKey key = KeyFactory.getInstance(ALGORITHM).generatePublic(new X509EncodedKeySpec(publicKey));
-
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+        Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, pubkey);
 
         return Base64.getEncoder().encode(cipher.doFinal(inputData));
     }
 
-    public static byte[] decrypt(byte[] privateKey, byte[] inputData) throws Exception {
+    public static byte[] decrypt(byte[] inputData) throws NoSuchAlgorithmException, NoSuchPaddingException,
+            InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
 
-        PrivateKey key = KeyFactory.getInstance(ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(privateKey));
-
-        Cipher cipher = Cipher.getInstance(ALGORITHM);
-        cipher.init(Cipher.DECRYPT_MODE, key);
+        Cipher cipher = Cipher.getInstance(RSA_CIPHER_ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, privkey);
 
         return cipher.doFinal(Base64.getDecoder().decode(inputData));
     }
@@ -53,10 +54,26 @@ public class AssimetricEncryption {
 
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);
 
-        SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
+        SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN"); // TODO: Search possible PRNG of SecureRandom that may compromise security
 
-        keyGen.initialize(512, random);
+        keyGen.initialize(2048, random);
 
-        return keyGen.generateKeyPair();
+        KeyPair kp = keyGen.generateKeyPair();
+        pubkey = (RSAPublicKey) kp.getPublic();
+        privkey = (RSAPrivateKey) kp.getPrivate();
+
+        // See generated keys
+        // -------------------------------------------------------- \\
+        /*
+        System.out.println ("-----BEGIN PRIVATE KEY-----");
+        System.out.println (Base64.getMimeEncoder().encodeToString( privkey.getEncoded()));
+        System.out.println ("-----END PRIVATE KEY-----");
+        System.out.println ("-----BEGIN PUBLIC KEY-----");
+        System.out.println (Base64.getMimeEncoder().encodeToString( pubkey.getEncoded()));
+        System.out.println ("-----END PUBLIC KEY-----"); 
+        */
+        // -------------------------------------------------------- \\
+
+        return kp;
     }
 }

@@ -1,7 +1,5 @@
 /*
 Third draft for Simetric Type Encryption
-	- Encrypton seems to work fine, but can be improved and Block cipher mode of operation, Counter Mode, Padding are to be
-	studied
 */
 
 
