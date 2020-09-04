@@ -24,7 +24,7 @@ public class Server {
         try { 
             inputline = in.readUTF();
 
-            if(inputline.equalsIgnoreCase("over")) return false;
+            if(inputline.equalsIgnoreCase("goodbye")) return false;
             System.out.println("[" + name + "]: " + inputline);
 
         } catch(IOException i) { 
@@ -56,7 +56,6 @@ public class Server {
             // close connection 
             socket.close(); 
             in.close();
-            return;
         }
         catch(IOException i) { 
             System.out.println(i); 

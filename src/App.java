@@ -1,151 +1,139 @@
-/*
-Testing Encryption/Decryption messages 
-*/
-
 package src;
 
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Scanner;
+import java.security.interfaces.RSAPublicKey;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-class User{
-    Client client;
-    Server server;
+import javax.crypto.SecretKey;
 
-    User(String ipadress, int port){
-        server = new Server(port);
-        client = new Client(ipadress,port);
+class CreatePeer implements Peer {
+    private Client cl; // Client Socket that invites the messages to the othe Peer Server
+    private Server sv; // Server Socket that recieves messages from other Peers Clients
+    private SecretKey mySKey; // Secret Key for the symmetric encryption
+    private KeyPair myKP; // KeyPair (private, public) for asymmetric encryption
+    private byte[] iv;  // Initialization Vector for symetric Encryption
+    private String ip; // IP of the connection
+    private Integer port; // Port of the connection
+
+    // TODO: discuss storing of other persons Simetric Key
+
+    CreatePeer(String ip, Integer port) throws NoSuchAlgorithmException, NoSuchProviderException, InterruptedException,
+            ExecutionException {
+        this.mySKey = generateSimetricSecretKey();
+        this.myKP = generateKeyPair();
+        this.ip = ip;
+        this.port = port;
+        execute();
     }
+
+    // ------------------------------------------------------------------------------------------------------------------ \\
+    private SecretKey generateSimetricSecretKey() {
+        return SymmetricEncryption.createAESKey();
+    }
+
+    // ------------------------------------------------------------------------------------------------------------------ \\
+    private KeyPair generateKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
+        return AsymmetricEncryption.generateKeyPair();
+    }
+
+
+    // ------------------------------------------------------------------------------------------------------------------ \\
+    // Update/Start (if first contact) the Client for communication
+    @Override
+    public void updateClient(String ip, Integer port) {
+        this.cl = new Client(ip, port);
+    }
+
+    // Update/Start (if first contact) the Server for messages
+    @Override
+    public void updateServer(Integer port) {
+        this.sv = new Server(port);
+    }
+
+
+    // ------------------------------------------------------------------------------------------------------------------ \\
+    // Generate the Initialization Vector used for Simetric encryption
+    public byte[] generateInitiazationVector() {
+        return SymmetricEncryption.createInitializationVector();
+    }
+
+    // Update the SecretKey used for Simetric encryption
+    @Override
+    public void refreshSecretKey() {
+        this.mySKey = SymmetricEncryption.createAESKey();
+    }
+
+    // Update the KeyPairs used for Assimetric encryption
+    @Override
+    public void refreshKeyPair() throws NoSuchAlgorithmException, NoSuchProviderException {
+        this.myKP = AsymmetricEncryption.generateKeyPair();
+    }
+
+    // Get Public key used on the Assimetric encryption
+    @Override
+    public RSAPublicKey getPublicKey() {
+        return (RSAPublicKey) this.myKP.getPublic();
+    }
+
+
+    /** 
+     * Execute the 2 methods concurrently.
+     * Method A (updateClient) is called according to the interface Callable,
+     * then Method B (updateServer) runs and then future.get() will wait for the result of A.
+     * (B is going to start running before the end of A)
+     * 
+     * @see https://stackoverflow.com/questions/30965339/executorcompletionservice-is-not-applicable-for-the-given-arguments
+     * @see https://stackoverflow.com/questions/22795563/how-to-use-callable-with-void-return-type 
+    */
+    public void execute() throws InterruptedException, ExecutionException {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        
+        // Implementation of Callable Interface
+        Future<Void> future = executorService.submit(new Callable<Void>() {
+
+            public Void call() throws Exception {
+                updateClient(ip, port);
+                return null;
+            }
+
+        });
+
+        updateServer(port);
+        future.get(); // Wait for completion of updateClient(ip, port);
+
+        // Close executorService
+        executorService.shutdown();
+    }
+    
 }
 
+public class App {
+    public static void main(String[] args)
+            throws NoSuchAlgorithmException, NoSuchProviderException, InterruptedException, ExecutionException {
 
+        new CreatePeer("localhost", 4442);
 
-public class App{
-
-    public static void main(String[] args) throws Exception {
-/*
-
-        Scanner stdin = new Scanner(System.in);
-        String str = stdin.nextLine();
-
-        //System.out.print("Base64 testing: ");
-        //for(byte a : Base64.getEncoder().encode(str.getBytes())) System.out.print((char) a);
-        //System.out.println();
-
-        System.out.println("String: " + str);
-
-        KeyPair prkey = AssimetricEncryption.generateKeyPair();
-
-        //System.out.print("Pub Key: ");
-        //for(byte a : prkey.getPublic().getEncoded()) System.out.print((char) a);
-        //System.out.println();
-
-        //System.out.print("Priv Key: ");
-        //for(byte a : prkey.getPrivate().getEncoded()) System.out.print((char) a);
-        //System.out.println();
-
-        byte[] enc = AssimetricEncryption.encrypt(prkey.getPublic().getEncoded(),str.getBytes());
-        System.out.println("Encryption: " + Arrays.toString(enc));
-
-        System.out.print("Encryption: ");
-        for(byte a : enc) System.out.print((char) a);
-        System.out.println();
-
-        System.out.println("Desencryption: " + new String(AssimetricEncryption.decrypt(prkey.getPrivate().getEncoded(),enc), StandardCharsets.UTF_8));
-
-        System.out.println("---------------------------------------------------------------------------------------");
-
-        SecretKey key = SimetricEncryption.createAESKey();
-        byte[] vector = SimetricEncryption.createInitializationVector();
-
-        //System.out.print("Key: ");
-        //for(byte a : key.getEncoded()) System.out.print((char) a);
-        //System.out.println();
-
-        //Scanner stdin = new Scanner(System.in);
-        //String str = stdin.nextLine();
-
-
-        System.out.println("String: " + str);
-        byte[] ence = SimetricEncryption.doAESEncryption(str, key, vector);
-
-        System.out.println("Encryption: " + Arrays.toString(ence));
-        System.out.print("Encryption: ");
-        for(byte a : ence) System.out.print((char) a);
-        System.out.println();
-
-        System.out.println("Desencryption: " + SimetricEncryption.doAESDecryption(ence, key, vector));
-*/
-    /*    System.out.println("---------------------------------------------------------------------------------------");
-        // Double Encryption
-
-        Scanner stdin = new Scanner(System.in);
-        String str = stdin.nextLine();
-
-        // 1layer
-        SecretKey key = SimetricEncryption.createAESKey();
-        byte[] iv = SimetricEncryption.createInitializationVector();
-        byte[] simetric = SimetricEncryption.doAESEncryption(str,key,iv);
-
-        // 2layer
-        KeyPair pkeys = AssimetricEncryption.generateKeyPair();
-        byte[] assimetric = AssimetricEncryption.encrypt(pkeys.getPublic().getEncoded(),simetric);
-
-
-        System.out.println("String: " + str);
-        System.out.println("1 Layer Encryption: " + Arrays.toString(simetric));
-        System.out.print("1 Layer Encryption: ");
-        for(byte a : simetric) System.out.print((char) a);
-        System.out.println();
-        System.out.println("2 Layer Encryption: " + Arrays.toString(assimetric));
-        System.out.print("2 Layer Encryption: ");
-        for(byte a : assimetric) System.out.print((char) a);
-        System.out.println();
-
-        //Decryption
-
-        //byte[] result = AssimetricEncryption.
-*/
-        // TESTE NUMBER 3
-
-        Scanner stdin = new Scanner(System.in);
-        String str = stdin.nextLine();
-        System.out.println("String: " + str);
-
-        if(str.contains("andre+")){
-            System.out.println("Too Powerfull to be encrypted");
-        }
-
-        // Encrypt process
-        SecretKey key = SimetricEncryption.createAESKey();
-        byte[] iv = SimetricEncryption.createInitializationVector();
-        byte[] simetric = SimetricEncryption.doAESEncryption(str,key,iv);
-
-        System.out.print("Simetric Encryption: ");
-        for(byte a : simetric) System.out.print((char) a);
-        System.out.println();
-
-        AssimetricEncryption.generateKeyPair();
+/*         AssimetricEncryption.generateKeyPair();
         byte[] keyencryption = AssimetricEncryption.encrypt(key.getEncoded());
 
         System.out.print("Key Encryption: ");
-        for(byte a : keyencryption) System.out.print((char) a);
+        for (byte a : keyencryption)
+            System.out.print((char) a);
         System.out.println();
 
         // Desencrypt process
         byte[] newkey = AssimetricEncryption.decrypt(keyencryption);
-        String newstring = SimetricEncryption.doAESDecryption(simetric,new SecretKeySpec(newkey, 0, newkey.length, "AES"),iv);
+        String newstring = SimetricEncryption.doAESDecryption(simetric,
+                new SecretKeySpec(newkey, 0, newkey.length, "AES"), iv);
 
         System.out.println("Desencrypted message: " + newstring);
-        System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
+        System.out.println("Success: " + (str.equals(newstring) ? "True" : "False")); */
     }
-
-
 }

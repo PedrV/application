@@ -1,5 +1,5 @@
 /*
-Third draft for Simetric Type Encryption
+Third draft for Symmetric Type Encryption
 */
 
 
@@ -9,23 +9,22 @@ import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Arrays;
 import java.util.Base64;
 
-import javax.crypto.SecretKey;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
+import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
-public class SimetricEncryption {
+public class SymmetricEncryption {
 
     private static final String ALGORITHM = "AES";
     private static final String AES_CIPHER_ALGORITHM = "AES/GCM/NoPadding";
 
-    private SimetricEncryption() {
+    private SymmetricEncryption() {
     }
 
     public static byte[] createInitializationVector() {

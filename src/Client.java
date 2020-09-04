@@ -11,15 +11,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-  
+import java.util.stream.Collectors;
+
 public class Client { 
     // initialize socket and input output streams 
     private Socket socket            = null; 
     private BufferedReader   input   = null; 
     private DataOutputStream out     = null; 
-  
+
     // constructor to put ip address and port 
-    public Client(String address, int port) { 
+    public Client(String address, int port) {
+
         // establish a connection 
         try { 
             socket = new Socket(address, port); 
@@ -27,7 +29,10 @@ public class Client {
   
             // takes input from terminal 
             input  = new BufferedReader(new InputStreamReader(System.in)); 
-  
+            
+            // convert from BufferReader to String
+            input.lines().collect(Collectors.joining());
+
             // sends output to the socket 
             out    = new DataOutputStream(socket.getOutputStream()); 
 
@@ -41,8 +46,8 @@ public class Client {
         // string to read message from input 
         String line = ""; 
   
-        // keep reading until "Over" is input 
-        while (!line.equalsIgnoreCase("over"))  {
+        // keep reading until "goodbye" is input 
+        while (!line.equalsIgnoreCase("goodbye"))  {
             try { 
                 line = input.readLine(); 
                 out.writeUTF(line); 
