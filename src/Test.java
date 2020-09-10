@@ -20,17 +20,18 @@ class User{
     Server server;
 
     User(String ipadress, int port){
-        server = new Server(port);
-        client = new Client(ipadress,port);
+        //server = new Server(port);
+        //client = new Client(ipadress,port);
+        // See variable type var.getClass().getName()
     }
 }
 
-
+/*
 
 public class Test{
 
     public static void main(String[] args) throws Exception {
-/*
+
 
         Scanner stdin = new Scanner(System.in);
         String str = stdin.nextLine();
@@ -115,7 +116,7 @@ public class Test{
 */
         // TESTE NUMBER 3
 
-        Scanner stdin = new Scanner(System.in);
+  /*       Scanner stdin = new Scanner(System.in);
         String str = stdin.nextLine();
         System.out.println("String: " + str);
 
@@ -154,4 +155,4 @@ public class Test{
     }
 
 
-}
+} */
