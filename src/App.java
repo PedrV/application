@@ -46,6 +46,7 @@ class CreatePeer implements Peer {
     private byte[] iv; // Initialization Vector for symetric Encryption
     private String ip; // IP of the connection
     private Integer port; // Port of the connection
+    private String clientName; // Name to be displayed
 
     // TODO: discuss storing of other persons Simetric Key (key obtained from the person that sended a msg first, used to encrypt the following msg), and how to store PubKeys used to communicate
 
@@ -72,6 +73,10 @@ class CreatePeer implements Peer {
         return AsymmetricEncryption.generateKeyPair();
     }
 
+    void setClientName(String name) {
+        this.clientName = name;
+    }
+
     SecretKey getSecretKey() {
         return this.mySKey;
     }
@@ -92,9 +97,6 @@ class CreatePeer implements Peer {
         this.port = port;
     }
 
-    void setClientName(String name) {
-        this.sv.setName(name);
-    }
     // ------------------------------------------------------------------------------------------------------------- \\
 
 
@@ -173,6 +175,7 @@ class CreatePeer implements Peer {
         });
 
         updateServer(port);
+        this.sv.setName(clientName);
         future.get(); // Wait for completion of updateClient(ip, port);
 
         // Close executorService

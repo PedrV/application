@@ -110,7 +110,7 @@ public class Menu {
 
             } else if (option == 3) {
                 System.out.println("Temporary test of connection. In the future only a RSA key will be needed.");
-
+                
                 System.out.print("Name of the contact: ");
                 source.setClientName(scan.nextLine());
 
