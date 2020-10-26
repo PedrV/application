@@ -187,8 +187,7 @@ class CreatePeer implements Peer {
 
 public class App {
     public static void main(String[] args) throws NoSuchAlgorithmException, NoSuchProviderException, InvalidKeyException, NoSuchPaddingException,
-            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {
-/*         
+            IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException {       
         CreatePeer c = new CreatePeer();        
         String s = DoEncryption.doEncryption("pedro", c.getSecretKey(), c.getIV(), c.getPublicKey());
         System.out.println(s);
@@ -208,6 +207,6 @@ public class App {
                 new SecretKeySpec(newkey, 0, newkey.length, "AES"), iv);
 
         System.out.println("Desencrypted message: " + newstring);
-        System.out.println("Success: " + (str.equals(newstring) ? "True" : "False")); */
+        System.out.println("Success: " + (str.equals(newstring) ? "True" : "False"));
     }
 }
